@@ -29,13 +29,25 @@ app.use((err, req, res, next) => {
   }
 });
 
-app.use(auth);
+app.post('/signin', controller.login);
+app.post('/signup', controller.createUser);
+
+// app.use(auth);
 
 app.use('/', usersRouter);
 app.use('/', cardsRouter);
 
-app.post('/signin', controller.login);
-app.post('/signup', controller.createUser);
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  const { status = 500, message } = err;
+  res
+    .status(status)
+    .send({
+      message: status === 500
+        ? 'На сервере произошла ошибка'
+        : message,
+    });
+});
 
 app.listen(PORT, () => {
   console.log(`Success! PORT: ${PORT}`);
