@@ -8,7 +8,6 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 const User = require('../models/user');
 const BadRequestError = require('../errors/BadRequestError');
 const ConflictError = require('../errors/ConflictError');
-const ForbiddenError = require('../errors/ForbiddenError');
 const NotFoundError = require('../errors/NotFoundError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 
@@ -38,22 +37,23 @@ const createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-  bcrypt.hash(password, 10)
-    .then((hash) => {
-      User.create({
-        name,
-        about,
-        avatar,
-        email,
-        password: hash,
-      })
-        .then((user) => {
-          // if (!user) {
-          //   throw new NotFoundError('Пользователь с таким ID не найден');
-          // }
-          res.status(200).send(user);
-        })
-        .catch(next);
+  return User.findOne({ email })
+    .then((user) => {
+      if (user) return next(new ConflictError('Ошибка регистрации. Данный email уже существует.'));
+      bcrypt.hash(password, 10)
+        .then((hash) => {
+          User.create({
+            name,
+            about,
+            avatar,
+            email,
+            password: hash,
+          })
+            .then((user) => {
+              res.status(200).send(user);
+            })
+            .catch(next);
+        });
     });
 };
 
@@ -68,27 +68,22 @@ const getUserInfo = (req, res, next) => {
     .catch(next);
 };
 
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, {
     new: true,
     runValidators: true,
   })
-    .orFail(new Error('CastError'))
     .then((user) => {
+      if (!user) {
+        throw new BadRequestError('Введены некорректные данные');
+      }
       res.status(200).send(user);
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Incorrect Inquiry' });
-      } if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Incorrect Inquiry, Validation Error' });
-      }
-      return res.status(500).send({ message: err.message });
-    });
+    .catch(next);
 };
 
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, {
     new: true,
@@ -96,16 +91,12 @@ const updateAvatar = (req, res) => {
   })
     .orFail(new Error('CastError'))
     .then((user) => {
+      if (!user) {
+        throw new BadRequestError('Введены некорректные данные');
+      }
       res.status(200).send(user);
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Incorrect Inquiry' });
-      } if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Incorrect Inquiry, Validation Error' });
-      }
-      return res.status(500).send({ message: err.message });
-    });
+    .catch(next);
 };
 
 const login = (req, res, next) => {

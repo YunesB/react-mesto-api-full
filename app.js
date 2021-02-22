@@ -3,9 +3,13 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 
+const { errors } = require('celebrate');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const controller = require('./controllers/users');
+const validateReq = require('./middlewares/validator');
 
 const auth = require('./middlewares/auth');
 
@@ -29,13 +33,24 @@ app.use((err, req, res, next) => {
   }
 });
 
-app.post('/signin', controller.login);
-app.post('/signup', controller.createUser);
+app.use(requestLogger);
 
-// app.use(auth);
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
+
+app.post('/signup', validateReq.validateLogin, controller.createUser);
+app.post('/signin', validateReq.validateLogin, controller.login);
+
+app.use(auth);
 
 app.use('/', usersRouter);
 app.use('/', cardsRouter);
+
+app.use(errorLogger);
+app.use(errors());
 
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
@@ -44,7 +59,7 @@ app.use((err, req, res, next) => {
     .status(status)
     .send({
       message: status === 500
-        ? 'На сервере произошла ошибка'
+        ? 'Ошибка сервера'
         : message,
     });
 });

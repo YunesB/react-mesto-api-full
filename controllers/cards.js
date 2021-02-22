@@ -1,90 +1,64 @@
 /* eslint-disable no-unused-vars */
 const Card = require('../models/card');
+const BadRequestError = require('../errors/BadRequestError');
+const ForbiddenError = require('../errors/ForbiddenError');
+const NotFoundError = require('../errors/NotFoundError');
 
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => {
+      if (!cards) {
+        throw new NotFoundError('Список карточек не найден');
+      }
       res.send(cards);
     })
-    .catch((err) => {
-      res.status(500).send({ message: 'File read error' });
-    });
+    .catch(next);
 };
 
-const createCard = (req, res) => {
+const createCard = (req, res, next) => {
   const { name, link, owner } = req.body;
   Card.create({ name, link, owner })
     .then((card) => {
+      if (!card) {
+        throw new BadRequestError('Введены некорректные данные');
+      }
       res.status(200).send(card);
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Incorrect Inquiry' });
-      } if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: err.message });
-      }
-      return res.status(500).send({ message: err.message });
-    });
+    .catch(next);
 };
 
-const deleteCard = (req, res) => {
+const deleteCard = (req, res, next) => {
   Card.findByIdAndRemove(req.params.cardId)
-    .orFail(new Error('NotFound'))
-    .then((card) => res.status(200).send(card))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Incorrect Inquiry' });
-      } if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Incorrect Inquiry, Validation Error' });
-      } if (err.message === 'NotFound') {
-        return res.status(404).send({ message: 'Incorrect Inquiry, Card not found' });
+    .orFail(new NotFoundError('Список карточек не найден'))
+    .then((card) => {
+      if (card.owner.toString() !== req.user._id.toString()) {
+        throw new ForbiddenError('У Вас недостаточно прав, чтобы совершить это действие');
       }
-      return res.status(500).send({ message: err.message });
-    });
+      res.status(200).send(card);
+    })
+    .catch(next);
 };
 
-const likeCard = (req, res) => {
+const likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .orFail(new Error('NotFound'))
+    .orFail(new NotFoundError('Указанная карточка не найдена'))
     .then((likesArray) => res.status(200).send(likesArray))
-    .catch((err) => {
-      console.log(err);
-      if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Incorrect Inquiry' });
-      } if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Incorrect Inquiry, Validation Error' });
-      } if (err.name === 'TypeError') {
-        return res.status(400).send({ message: 'Incorrect Inquiry, TypeError' });
-      } if (err.message === 'NotFound') {
-        return res.status(404).send({ message: 'Incorrect Inquiry, Card not found' });
-      }
-      return res.status(500).send({ message: err.message });
-    });
+    .catch(next);
 };
 
-const dislikeCard = (req, res) => {
+const dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .orFail(new Error('NotFound'))
+    .orFail(new NotFoundError('Указанная карточка не найдена'))
     .then((likesArray) => res.status(200).send(likesArray))
-    .catch((err) => {
-      console.log(err);
-      if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Incorrect Inquiry' });
-      } if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Incorrect Inquiry, Validation Error' });
-      } if (err.message === 'NotFound') {
-        return res.status(404).send({ message: 'Incorrect Inquiry, Card not found' });
-      }
-      return res.status(500).send({ message: err.message });
-    });
+    .catch(next);
 };
 
 module.exports = {
