@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://api.webmesto.students.nomoreparties.space';
+export const BASE_URL = 'https://api.webmesto.students.nomoreparties.space';
 
 function handleRes(res) {
   if (res.ok) {

@@ -128,5 +128,5 @@ class Api {
 }
 
 export const api = new Api({
-  address: 'http://api.webmesto.students.nomoreparties.space'
+  address: 'https://api.webmesto.students.nomoreparties.space'
 });
