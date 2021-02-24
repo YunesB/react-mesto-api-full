@@ -1,0 +1,13 @@
+.profile-info__name-box {
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    margin: 0 0 16px 0;
+}
+
+@media screen and (max-width: 500px) {
+    .profile-info__name-box {
+       align-items: center;
+       margin-top: 39.25px;
+    }
+}

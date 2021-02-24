@@ -1,0 +1,33 @@
+.card__like {
+    background-image: url(../../../images/like.svg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 21px;
+    height: 18.4px;
+    align-self: center;
+    border: none;
+    box-shadow: none;
+    background-color: white;
+    padding: 0;
+    transition: .2s;
+}
+
+.card__like_state_posted {
+    background-image: url(../../../images/like_posted.svg);
+}
+
+.card__like:active {
+    border-color: white;
+    outline: none;
+    background-image: url(../../../images/like_posted.svg);
+}
+
+.card__like:focus {
+    border-color: white;
+    outline: none;
+}
+
+.card__like:hover {
+    transform: scale(1.1);
+    cursor: pointer;
+}

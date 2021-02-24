@@ -1,0 +1,14 @@
+.popup__error {
+    display: none;
+    color: red;
+    font-size: 12px;
+    line-height: 15px;
+    position: absolute;
+    top: calc(100% + 5px);
+    margin: 0;
+    padding: 0;
+}
+
+.popup__error_visible {
+    display: flex;
+}

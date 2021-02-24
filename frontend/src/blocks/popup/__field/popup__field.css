@@ -1,0 +1,6 @@
+.popup__field {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    margin-bottom: 35px;
+}

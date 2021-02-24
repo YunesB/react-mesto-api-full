@@ -1,0 +1,24 @@
+.profile-info__customization {
+    display: inline-block;
+    position: relative;
+    width: 24px;
+    height: 24px;
+    background-image: url(../../../images/pencil.svg);
+    background-color: black;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid white;
+}
+
+.profile-info__customization:hover {
+    transition: .2s;
+    opacity: .6;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 500px) {
+    .profile-info__customization {
+        width: 18px;
+        height: 18px;
+    }
+}
