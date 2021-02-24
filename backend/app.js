@@ -23,7 +23,8 @@ mongoose.connect('mongodb://localhost:27017/mydb', {
 });
 
 const allowedCors = [
-  'http://webmesto.students.nomoredomains.icu',
+  'http://webmesto.students.nomoreparties.space',
+  'https://webmesto.students.nomoreparties.space'
 ];
 
 app.use((req, res, next) => {
