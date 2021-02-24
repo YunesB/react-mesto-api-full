@@ -22,6 +22,10 @@ mongoose.connect('mongodb://localhost:27017/mydb', {
   useFindAndModify: false,
 });
 
+const allowedCors = [
+  'http://webmesto.students.nomoredomains.icu',
+];
+
 app.use((req, res, next) => {
   const { origin } = req.headers;
   if (allowedCors.includes(origin)) {
