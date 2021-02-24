@@ -22,18 +22,18 @@ mongoose.connect('mongodb://localhost:27017/mydb', {
   useFindAndModify: false,
 });
 
-const allowedCors = [
-  'http://webmesto.students.nomoreparties.space',
-  'https://webmesto.students.nomoreparties.space'
-];
+// const allowedCors = [
+//   'http://webmesto.students.nomoreparties.space',
+//   'https://webmesto.students.nomoreparties.space'
+// ];
 
-app.use((req, res, next) => {
-  const { origin } = req.headers;
-  if (allowedCors.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-  next();
-});
+// app.use((req, res, next) => {
+//   const { origin } = req.headers;
+//   if (allowedCors.includes(origin)) {
+//     res.header('Access-Control-Allow-Origin', origin);
+//   }
+//   next();
+// });
 
 app.use(cors());
 app.use(bodyParser.json());
