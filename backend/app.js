@@ -15,6 +15,7 @@ const validateReq = require('./middlewares/validator');
 
 const { PORT = 3000 } = process.env;
 const app = express();
+app.use(cors());
 
 mongoose.connect('mongodb://localhost:27017/mydb', {
   useNewUrlParser: true,
@@ -22,20 +23,6 @@ mongoose.connect('mongodb://localhost:27017/mydb', {
   useFindAndModify: false,
 });
 
-// const allowedCors = [
-//   'http://webmesto.students.nomoreparties.space',
-//   'https://webmesto.students.nomoreparties.space'
-// ];
-
-// app.use((req, res, next) => {
-//   const { origin } = req.headers;
-//   if (allowedCors.includes(origin)) {
-//     res.header('Access-Control-Allow-Origin', origin);
-//   }
-//   next();
-// });
-
-app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
