@@ -8,7 +8,7 @@ module.exports = (req, res, next) => {
   if (!authorization || !authorization.startsWith('Bearer ')) {
     return res
       .status(401)
-      .send({ message: 'Ошибка авторизации' });
+      .send({ message: 'Ошибка авторизации. Токен недоступен' });
   }
 
   const token = authorization.replace('Bearer ', '');
@@ -19,7 +19,7 @@ module.exports = (req, res, next) => {
   } catch (err) {
     return res
       .status(401)
-      .send({ message: 'Ошибка авторизации' });
+      .send({ message: 'Ошибка авторизации. Токен не прошёл проверку' });
   }
   req.user = payload;
   return next();

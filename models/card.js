@@ -35,6 +35,3 @@ const cardSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('card', cardSchema);
-
-// валидацию ссылки частично взял отсюда:
-// https://stackoverflow.com/questions/161738/what-is-the-best-regular-expression-to-check-if-a-string-is-a-valid-url

@@ -16,7 +16,8 @@ const getCards = (req, res, next) => {
 };
 
 const createCard = (req, res, next) => {
-  const { name, link, owner } = req.body;
+  const { name, link } = req.body;
+  const owner = req.user._id;
   Card.create({ name, link, owner })
     .then((card) => {
       if (!card) {
@@ -28,13 +29,16 @@ const createCard = (req, res, next) => {
 };
 
 const deleteCard = (req, res, next) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  Card.findById(req.params.cardId)
     .orFail(new NotFoundError('Список карточек не найден'))
     .then((card) => {
       if (card.owner.toString() !== req.user._id.toString()) {
         throw new ForbiddenError('У Вас недостаточно прав, чтобы совершить это действие');
       }
-      res.status(200).send(card);
+      Card.findByIdAndRemove(req.params.cardId)
+        .then((data) => {
+          res.status(200).send(data);
+        });
     })
     .catch(next);
 };

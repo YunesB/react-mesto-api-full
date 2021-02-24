@@ -1,21 +1,20 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-require('dotenv').config();
 
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
+const auth = require('./middlewares/auth');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const controller = require('./controllers/users');
 const validateReq = require('./middlewares/validator');
 
-const auth = require('./middlewares/auth');
-
+const { PORT = 3000 } = process.env;
 const app = express();
-const PORT = 3000;
 
 mongoose.connect('mongodb://localhost:27017/mydb', {
   useNewUrlParser: true,
@@ -46,10 +45,8 @@ app.get('/crash-test', () => {
 app.post('/signup', validateReq.validateLogin, controller.createUser);
 app.post('/signin', validateReq.validateLogin, controller.login);
 
-app.use(auth);
-
-app.use('/', usersRouter);
-app.use('/', cardsRouter);
+app.use('/', auth, usersRouter);
+app.use('/', auth, cardsRouter);
 
 app.use(errorLogger);
 app.use(errors());

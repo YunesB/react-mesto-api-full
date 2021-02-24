@@ -31,7 +31,7 @@ const validateAvatarUpdate = celebrate({
 
 const validateUserId = celebrate({
   params: Joi.object().keys({
-    userId: Joi.string()
+    id: Joi.string()
       .required()
       .custom((value) => {
         if (!ObjectId.isValid(value)) {
@@ -53,7 +53,7 @@ const validateCardCreation = celebrate({
         }
         return value;
       }),
-    owner: Joi.string(),
+    // owner: Joi.string(),
   }),
 });
 

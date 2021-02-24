@@ -33,6 +33,17 @@ const getUserId = (req, res, next) => {
     .catch(next);
 };
 
+const getUserInfo = (req, res, next) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('Пользователь с таким ID не найден');
+      }
+      res.status(200).send(user);
+    })
+    .catch(next);
+};
+
 const createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
@@ -55,17 +66,6 @@ const createUser = (req, res, next) => {
             .catch(next);
         });
     });
-};
-
-const getUserInfo = (req, res, next) => {
-  User.findById(req.user._id)
-    .then((user) => {
-      if (!user) {
-        throw new NotFoundError('Пользователь с таким ID не найден');
-      }
-      res.send({ data: user });
-    })
-    .catch(next);
 };
 
 const updateUser = (req, res, next) => {
@@ -107,13 +107,24 @@ const login = (req, res, next) => {
       if (!user) {
         throw new UnauthorizedError('Неправильные почта или пароль');
       }
-      return bcrypt.compare(password, user.password);
+      return bcrypt.compare(password, user.password)
+        .then((matched) => {
+          if (!matched) {
+            throw new UnauthorizedError('Неправильные почта или пароль');
+          }
+          return user;
+        });
     })
-    .then((matched) => {
-      if (!matched) {
-        throw new UnauthorizedError('Неправильные почта или пароль');
+    .then((loggedInUser) => {
+      const token = jwt.sign(
+        { _id: loggedInUser._id },
+        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+        { expiresIn: '7d' },
+      );
+      if (!token) {
+        throw new UnauthorizedError('Токен не найден');
       }
-      res.send({ message: 'Aутентификация успешна' });
+      return res.status(200).send({ token });
     })
     .catch(next);
 };
