@@ -3,4 +3,4 @@
   
 Пожалуйста, прикрепите в это описание ссылку на сайт, размещенный на Яндекс.Облаке.
 
-- [Ссылка на сайт](webmesto.students.nomoreparties.space/)
+- [Ссылка на сайт](https://webmesto.students.nomoreparties.space/)
