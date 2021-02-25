@@ -15,13 +15,14 @@ const validateReq = require('./middlewares/validator');
 
 const { PORT = 3000 } = process.env;
 const app = express();
-app.use(cors());
 
 mongoose.connect('mongodb://localhost:27017/mydb', {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
 });
+
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

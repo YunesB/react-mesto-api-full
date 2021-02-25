@@ -11,7 +11,7 @@ function handleRes(res) {
 export const signUp = (email, password) => {
   return fetch(`${BASE_URL}/signup`, {
     method: 'POST',
-    mode: 'cors',
+    mode: 'no-cors',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
@@ -24,7 +24,7 @@ export const signUp = (email, password) => {
 export const signIn = (email, password) => {
   return fetch(`${BASE_URL}/signin`, {
     method: 'POST',
-    mode: 'cors',
+    mode: 'no-cors',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
