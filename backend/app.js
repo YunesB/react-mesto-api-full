@@ -49,7 +49,7 @@ app.post('/signin', validateReq.validateLogin, controller.login);
 
 app.use('/', auth, usersRouter);
 app.use('/', auth, cardsRouter);
-app.use("*", notFound);
+app.use('*', notFound);
 
 app.use(errorLogger);
 app.use(errors());
