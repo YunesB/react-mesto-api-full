@@ -12,6 +12,7 @@ const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const controller = require('./controllers/users');
 const validateReq = require('./middlewares/validator');
+const notFound = require('./routes/notFound');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -48,6 +49,7 @@ app.post('/signin', validateReq.validateLogin, controller.login);
 
 app.use('/', auth, usersRouter);
 app.use('/', auth, cardsRouter);
+app.use("*", notFound);
 
 app.use(errorLogger);
 app.use(errors());
@@ -66,8 +68,4 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
   console.log(`Success! PORT: ${PORT}`);
-});
-
-app.all('*', (req, res) => {
-  res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });
 });

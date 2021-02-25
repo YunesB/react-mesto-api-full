@@ -245,7 +245,7 @@ function App() {
             onLikeClick={handleCardLike}
             onDeleteClick={handleCardDelete}
             cards={cards}
-            text="&copy; 2020 Mesto Russia"
+            text="&copy; 2021 Mesto Russia. Yunes Bakhush"
           />
           <Route path="/sign-up">
             <Authorization
