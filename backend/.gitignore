@@ -9,8 +9,10 @@ node_modules
 # Optional npm cache directory
 .npm
 
+#Env files
+.env
+
 # Optional REPL history
 .DS_Store
 .idea
 .vscode
-.env

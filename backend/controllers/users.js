@@ -37,7 +37,7 @@ const getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Пользователь с таким ID не найден');
+        throw new NotFoundError('Пользователь с данным ID не найден');
       }
       res.status(200).send(user);
     })
@@ -50,7 +50,7 @@ const createUser = (req, res, next) => {
   } = req.body;
   return User.findOne({ email })
     .then((user) => {
-      if (user) return next(new ConflictError('Ошибка регистрации. Данный email уже существует.'));
+      if (user) return next(new ConflictError('Ошибка регистрации. Данный email уже существует'));
       bcrypt.hash(password, 10)
         .then((hash) => {
           User.create({
@@ -61,7 +61,8 @@ const createUser = (req, res, next) => {
             password: hash,
           })
             .then((user) => {
-              res.status(200).send(user);
+              User.findById(user._id)
+                .then((user) => res.status(200).send(user));
             })
             .catch(next);
         });
